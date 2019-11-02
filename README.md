@@ -17,8 +17,8 @@ Saaslify is a reseller. We have no exclusitivity rights, but demand that you sel
 ### Core features
 
 - [ ] Authentication: identify a user of your platform
--- [ ] github
--- [ ] email/password
+- - [ ] github
+- - [ ] email/password
 -- [ ] passwordless authentication
 - [ ] Authorization
 -- [ ] Determine the role of the user (billing, admin, user)
