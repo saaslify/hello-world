@@ -1,0 +1,91 @@
+account:
+   account_id: 1234 # To obtain a valid account_id you have to pass an automated process
+include:
+  - "./saaslify-resource-2.yaml"
+  - "https://github.com/saaslify/hello-world/saaslify.yaml" # Must either be public url or same owner
+  - "https://www.saaslify.com/examples/saaslify_example.yaml" # Must be publically accessible
+  - "https://www.saaslify.com/examples/saaslify_example-2.json" # Must be publically accessible
+products:
+  - ref: hello-world-self-hosted # Internal reference
+    brand_name: hello-world # Name you want to brand with
+    auth:
+      - ref: auth_1 # Reference
+        options:
+          - github
+          - email_password
+    default_currency: USD
+    seats:
+      - ref: any_seat
+        price:
+          - value: 1
+    api_limits:
+      limits:
+        - ref: free_ms
+          unit: milliseconds
+          value: 500
+          requests: 2
+        - ref: free_day
+          unit: days
+          value: 1
+          requests: 60
+        - ref: not_insane
+          unit: minute
+          value: 1
+          requests: 10000
+        - ref: no_limit
+          unit: day
+          value: 1
+          requests: -1
+      metered_billing:
+        - ref: startup_meterage
+          requests: 10000
+          price:
+            - value: 1
+        - ref: enterprise_meterage
+          requests: 10000
+          price:
+            - value: 0.5
+    plans:
+      - ref: free
+        seats:
+          included: 1
+          max: 1
+          costs:
+            - ref: any_seat
+        limits:
+          - ref: free_ms
+          - ref: free_day
+      - ref: startup
+        seats:
+          included: 1
+          max: 10
+          costs:
+            - ref: any_seat
+        limits:
+          - ref: not_insane
+      - ref: enterprise
+        seats:
+          included: -1 # A non positive number will be considered free, note that seats will incur costs at 0.005$/month
+        limits:
+          - ref: no_limit
+        metered:
+          - meterage_ref: enterprise_meterage
+            api_ref: default_api
+    resources:
+       - ref: default_api
+         type: api
+         auth_by: auth_1
+         target:
+            url: "https://hello-world-api.saaslify-examples.com"
+            relative_path: "relative/path/"
+         # make sure this api reachable by our API_GATE_WAY with IP 123.456.789
+         # Your api can be reached by saaslify-api.com/brand_name/relative/path/
+         # Authentication can happen over
+         # - api-keys managed via saaslify.com interface (currently limited to one per seat)
+         # - jwt_token
+         # We also sell your product over a platform
+         # Otherwise you might be interested in offering your own frontend
+       - ref: default_frontend
+         type: frontend
+         target:
+            url: "https://hello-world-www.saaslify-examples.com"
